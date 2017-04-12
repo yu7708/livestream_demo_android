@@ -5,21 +5,21 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.easemob.livedemo.ui.activity.LiveAnchorActivity"
+    tools:context="com.ucai.livedemo.cn.ucai.livedemo.ui.activity.LiveAnchorActivity"
     >
     <RelativeLayout
         android:id="@+id/live_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-        <com.easemob.livedemo.ucloud.LiveCameraView
+        <cn.ucai.live.ucloud.LiveCameraView
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             >
 
-        </com.easemob.livedemo.ucloud.LiveCameraView>
+        </cn.ucai.live.ucloud.LiveCameraView>
 
         <!-- top layout -->
         <include layout="@layout/layout_live_toolbar"/>
@@ -45,7 +45,7 @@
             android:visibility="gone"
             />
 
-        <com.easemob.livedemo.ui.widget.RoomMessagesView
+        <cn.ucai.live.ui.widget.RoomMessagesView
             android:id="@+id/message_view"
             android:layout_width="match_parent"
             android:layout_height="174dp"
@@ -61,7 +61,7 @@
              android:layout_marginBottom="10dp"
              />-->
 
-        <com.easemob.livedemo.ui.widget.PeriscopeLayout
+        <cn.ucai.live.ui.widget.PeriscopeLayout
             android:id="@+id/periscope_layout"
             android:layout_width="150dp"
             android:layout_height="190dp"
