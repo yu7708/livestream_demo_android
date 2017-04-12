@@ -162,7 +162,7 @@
     <string name="you_are_group">你被群创建者从此群中移除</string>
     <string name="the_current_group">当前群聊已被群创建者解散</string>
     <string name="Cant_chat_with_yourself">不能和自己聊天</string>
-    <string name="deleting">正在删除...</string>
+    <string name="deleting">正在删除.....</string>
     <string name="Delete_failed">删除失败:</string>
     <string name="Is_moved_into_blacklist">正在移入黑名单...</string>
     <string name="Log_uploaded_successfully">日志上传成功</string>
