@@ -2,15 +2,6 @@ package cn.ucai.live;
 
 import android.content.Context;
 
-import com.hyphenate.easeui.domain.EaseUser;
-import com.hyphenate.easeui.domain.User;
-import com.hyphenate.easeui.model.EaseAtMessageHelper;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import cn.ucai.live.utils.PreferenceManager;
 
 
