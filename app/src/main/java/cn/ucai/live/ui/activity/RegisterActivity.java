@@ -21,6 +21,7 @@ import cn.ucai.live.data.model.IUserModel;
 import cn.ucai.live.data.model.OnCompleteListener;
 import cn.ucai.live.data.model.UserModel;
 import cn.ucai.live.utils.I;
+import cn.ucai.live.utils.PreferenceManager;
 import cn.ucai.live.utils.Result;
 import cn.ucai.live.utils.ResultUtils;
 
@@ -123,6 +124,7 @@ public class RegisterActivity extends BaseActivity {
                             pd.dismiss();
                             showToast("注册成功");
                             //// FIXME: 2017/4/12 注册成功,跳转至登录
+                            PreferenceManager.getInstance().setCurrentUserName(username.getText().toString());
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                             finish();
                         }

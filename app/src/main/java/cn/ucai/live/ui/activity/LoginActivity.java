@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import cn.ucai.live.R;
+import cn.ucai.live.utils.PreferenceManager;
+
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 
@@ -40,6 +42,8 @@ public class LoginActivity extends BaseActivity {
       finish();
       return;
     }
+
+
     setContentView(R.layout.activity_login);
     // Set up the login form.
     mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -55,6 +59,10 @@ public class LoginActivity extends BaseActivity {
       }
     });
 
+    //// FIXME: 2017/4/13 注册完后显示在登录的用户名为当前名字
+    if(PreferenceManager.getInstance().getCurrentUsername()!=null){
+      mEmailView.setText(PreferenceManager.getInstance().getCurrentUsername());
+    }
 
     Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
     mEmailSignInButton.setOnClickListener(new OnClickListener() {
