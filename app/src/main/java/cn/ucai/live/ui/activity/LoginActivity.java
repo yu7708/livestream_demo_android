@@ -16,7 +16,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import cn.ucai.live.LiveHelper;
 import cn.ucai.live.R;
+import cn.ucai.live.data.UserProfileManager;
+import cn.ucai.live.utils.MD5;
 import cn.ucai.live.utils.PreferenceManager;
 
 import com.hyphenate.EMCallBack;
@@ -36,8 +41,9 @@ public class LoginActivity extends BaseActivity {
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
+    //// FIXME: 2017/4/13 把改后的方法就是调用的这个方法
     if(EMClient.getInstance().isLoggedInBefore()){
+//    if(LiveHelper.getInstance().isLoggedIn()){
       startActivity(new Intent(this, MainActivity.class));
       finish();
       return;
@@ -96,8 +102,8 @@ public class LoginActivity extends BaseActivity {
     mPasswordView.setError(null);
 
     // Store values at the time of the login attempt.
-    Editable email = mEmailView.getText();
-    Editable password = mPasswordView.getText();
+    final Editable email = mEmailView.getText();
+    final Editable password = mPasswordView.getText();
 
     boolean cancel = false;
     View focusView = null;
@@ -124,8 +130,12 @@ public class LoginActivity extends BaseActivity {
       // Show a progress spinner, and kick off a background task to
       // perform the user login attempt.
       showProgress(true);
-      EMClient.getInstance().login(email.toString(), password.toString(), new EMCallBack() {
+      EMClient.getInstance().login(email.toString(), MD5.getMessageDigest(password.toString()), new EMCallBack() {
         @Override public void onSuccess() {
+          //// FIXME: 2017/4/13 登录成功还要异步加载信息,也要修改sf里的用户名
+          PreferenceManager.getInstance().setCurrentUserName(EMClient.getInstance().getCurrentUser());
+          LiveHelper.getInstance().getUserProfileManager().asyncGetCurrentAppUserInfo();
+
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
@@ -135,6 +145,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void run() {
               showProgress(false);
+              Toast.makeText(LoginActivity.this, email.toString()+"....."+password.toString(), Toast.LENGTH_SHORT).show();
               mPasswordView.setError(s);
               mPasswordView.requestFocus();
             }

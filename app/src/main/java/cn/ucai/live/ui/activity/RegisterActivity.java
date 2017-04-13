@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.domain.User;
@@ -21,6 +22,7 @@ import cn.ucai.live.data.model.IUserModel;
 import cn.ucai.live.data.model.OnCompleteListener;
 import cn.ucai.live.data.model.UserModel;
 import cn.ucai.live.utils.I;
+import cn.ucai.live.utils.MD5;
 import cn.ucai.live.utils.PreferenceManager;
 import cn.ucai.live.utils.Result;
 import cn.ucai.live.utils.ResultUtils;
@@ -65,7 +67,7 @@ public class RegisterActivity extends BaseActivity {
                     mModel.register(RegisterActivity.this,
                             username.getText().toString(),
                             usernick.getText().toString(),
-                            password.getText().toString(),
+                            MD5.getMessageDigest(password.getText().toString()),
                             new OnCompleteListener<String>() {
                                 @Override
                                 public void onSuccess(String s) {
@@ -117,12 +119,13 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    EMClient.getInstance().createAccount(username.getText().toString(), password.getText().toString());
+                    EMClient.getInstance().createAccount(username.getText().toString(),MD5.getMessageDigest(password.getText().toString()));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             pd.dismiss();
-                            showToast("注册成功");
+                           // showToast("注册成功");
+                            Toast.makeText(RegisterActivity.this, username.getText().toString() + "...." +password.getText().toString(), Toast.LENGTH_SHORT).show();
                             //// FIXME: 2017/4/12 注册成功,跳转至登录
                             PreferenceManager.getInstance().setCurrentUserName(username.getText().toString());
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));

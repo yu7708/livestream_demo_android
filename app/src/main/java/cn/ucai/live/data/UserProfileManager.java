@@ -175,6 +175,7 @@ public class UserProfileManager {
 								if(user!=null) {
 									//// FIXME: 2017/4/4
 									//currentAppUser=user;
+									//f
 									//setCurrentAppUserNick(user.getMUserNick());
 									//setCurrentAppUserAvatar(user.getAvatar());
 								}
