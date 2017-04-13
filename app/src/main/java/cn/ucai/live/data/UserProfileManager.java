@@ -174,10 +174,9 @@ public class UserProfileManager {
 								//仿下面拿到图片和昵称
 								if(user!=null) {
 									//// FIXME: 2017/4/4
-									currentAppUser=user;
-									//f
-									setCurrentAppUserNick(user.getMUserNick());
-									setCurrentAppUserAvatar(user.getAvatar());
+									//currentAppUser=user;
+									//setCurrentAppUserNick(user.getMUserNick());
+									//setCurrentAppUserAvatar(user.getAvatar());
 								}
 							}
 						}
