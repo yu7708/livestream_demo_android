@@ -19,4 +19,14 @@ public interface LiveService {
 
     @GET("findUserByUserName")
     Call<String> loadUserInfo(@Query(I.User.USER_NAME) String uesrname);
+
+    @GET("live/createChatRoom")
+    Call<String> createChatRoom(
+            @Query("auth")String auth,
+            @Query("name")String name,
+            @Query("description")String description,
+            @Query("owner")String owner,
+            @Query("maxuser")int maxuser,
+            @Query("members")String members
+    );
 }

@@ -107,4 +107,20 @@ public class ResultUtils {
         }
         return  null;
     }*/
+    public static String getResultFromJson(String jsonStr){
+        //// FIXME: 2017/4/15 新增的方法用来判断返回生成的Id的
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            if(!jsonObject.isNull("data")) {
+                JSONObject data = jsonObject.getJSONObject("data");
+                if (!data.isNull("id")) {
+                    return data.getString("id");
+                }
+            }
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -2,6 +2,8 @@ package cn.ucai.live.data.restapi;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
+
 import cn.ucai.live.LiveApplication;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.model.LiveService;
@@ -31,6 +33,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+import retrofit2.http.Query;
 
 /**
  * Created by wei on 2017/2/14.
@@ -189,29 +192,57 @@ return null;
         }
     }
     //
+    //// FIXME: 2017/4/15 自己写的创建聊天室
+    public String createLiveRoom(String auth, String name, String description, String owner,
+                                 int maxuser, String members) throws IOException {
+        //这一个是传参数调用,下面2个参数的是给外面用的调用
+        Call<String> call = liveService.createChatRoom(auth, name, description, owner, maxuser, members);
+       //将这个调用,执行,然后执行的就是原来的请求返回的String类型的result
 
-    public LiveRoom createLiveRoom(String name, String description, String coverUrl) throws LiveException {
+            Response<String> response = call.execute();
+            //这一步的返回就相当于原来的调用了,方法是不变的,加深是原来没看到的暴露出的越多
+             return ResultUtils.getResultFromJson(response.body());
+    }
+    public String createLiveRoom(String name,String description) throws IOException {
+        //这个调用的上面的方法,所以也是一个String的类型
+        return createLiveRoom("1IFgE",name,description,EMClient.getInstance().getCurrentUser(),
+                300,EMClient.getInstance().getCurrentUser());
+    }
+
+    //f------>
+    public LiveRoom createLiveRoom(String name, String description, String coverUrl) throws LiveException, IOException {
         return createLiveRoomWithRequest(name, description, coverUrl, null);
     }
 
-    public LiveRoom createLiveRoom(String name, String description, String coverUrl, String liveRoomId) throws LiveException {
+    public LiveRoom createLiveRoom(String name, String description, String coverUrl, String liveRoomId) throws LiveException, IOException {
         return createLiveRoomWithRequest(name, description, coverUrl, liveRoomId);
     }
 
-    private LiveRoom createLiveRoomWithRequest(String name, String description, String coverUrl, String liveRoomId) throws LiveException {
+    private LiveRoom createLiveRoomWithRequest(String name, String description, String coverUrl, String liveRoomId) throws LiveException, IOException {
         LiveRoom liveRoom = new LiveRoom();
         liveRoom.setName(name);
         liveRoom.setDescription(description);
         liveRoom.setAnchorId(EMClient.getInstance().getCurrentUser());
         liveRoom.setCover(coverUrl);
-
-        Call<ResponseModule<LiveRoom>> responseCall;
+        //// FIXME: 2017/4/15 在此调用自己写的创建聊天室的方法,判断返回的id,仿照下面的方法写
+        String id = createLiveRoom(name, description);
+        if(id!=null){
+            liveRoom.setId(id);
+            liveRoom.setChatroomId(id);
+        }else{
+            //这个id是传过来的id
+            liveRoom.setId(liveRoomId);
+        }
+        //f---->
+        //// FIXME: 2017/4/15 上面这一部分是仿写,把原来的注释
+   /*     Call<ResponseModule<LiveRoom>> responseCall;
         if(liveRoomId != null){
             responseCall = apiService.createLiveShow(liveRoomId, liveRoom);
 
         }else {
             responseCall = apiService.createLiveRoom(liveRoom);
         }
+        //先拿到数据在创建
         ResponseModule<LiveRoom> response = handleResponseCall(responseCall).body();
         LiveRoom room = response.data;
         if(room.getId() != null) {
@@ -219,10 +250,12 @@ return null;
         }else {
             liveRoom.setId(liveRoomId);
         }
+        //设置房间号
         liveRoom.setChatroomId(room.getChatroomId());
         //liveRoom.setAudienceNum(1);
+        //推流和拉流,这应该是直播的根本把,这个技术是怎么做的呢,
         liveRoom.setLivePullUrl(room.getLivePullUrl());
-        liveRoom.setLivePushUrl(room.getLivePushUrl());
+        liveRoom.setLivePushUrl(room.getLivePushUrl());*/
         return liveRoom;
     }
 
@@ -346,7 +379,9 @@ return null;
 
     private <T> Response<T>handleResponseCall(Call<T> responseCall) throws LiveException{
         try {
+            Log.e(TAG, "handleResponseCall: responseCall="+responseCall.toString() );
             Response<T> response = responseCall.execute();
+            Log.e(TAG, "handleResponseCall: response="+response);
             if(!response.isSuccessful()){
                 throw new LiveException(response.code(), response.errorBody().string());
             }

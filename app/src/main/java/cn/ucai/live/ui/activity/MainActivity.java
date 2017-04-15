@@ -31,7 +31,7 @@ public class MainActivity extends BaseActivity {
 
         processConflictIntent(getIntent());
     }
-
+    //点击跳转到聊天室
     @OnClick(R.id.floatingActionButton) void createLiveRoom() {
         startActivity(new Intent(this, CreateLiveRoomActivity.class));
     }

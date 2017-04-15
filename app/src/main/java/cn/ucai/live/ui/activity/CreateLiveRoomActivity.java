@@ -24,6 +24,7 @@ import com.hyphenate.cloud.EMCloudOperationCallback;
 import com.hyphenate.cloud.HttpFileManager;
 import com.hyphenate.exceptions.HyphenateException;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONException;
@@ -62,7 +63,7 @@ public class CreateLiveRoomActivity extends BaseActivity {
                 "image/*");
         startActivityForResult(pickIntent, REQUEST_CODE_PICK);
     }
-
+    //联合房间?
     @OnClick(R.id.txt_associate_room) void associateRoom(){
         startActivity(new Intent(this, AssociateLiveRoomActivity.class));
     }
@@ -116,7 +117,12 @@ public class CreateLiveRoomActivity extends BaseActivity {
                 if(exception != null){
                     throw exception;
                 }
-                return ApiManager.get().createLiveRoom(name, desc, coverUrl);
+                try {
+                    return ApiManager.get().createLiveRoom(name, desc, coverUrl);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
             }
 
             @Override public void onSuccess(LiveRoom liveRoom) {
