@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.live.data.model.LiveRoom;
+import cn.ucai.live.data.model11.Gift;
+import cn.ucai.live.data.model11.Result;
+import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.data.restapi.model.ResponseModule;
 import cn.ucai.live.ui.GridMarginDecoration;
 
@@ -33,6 +37,8 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class LiveListFragment extends Fragment {
+    private static final String TAG = "LiveListFragment";
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private ProgressBar loadmorePB;
@@ -88,6 +94,9 @@ public class LiveListFragment extends Fragment {
         else
             loadmorePB.setVisibility(View.VISIBLE);
         isLoading = true;
+        //// FIXME: 2017/4/14
+        loadGiftList();
+        //--->
         ThreadPoolManager.getInstance().executeTask(new ThreadPoolManager.Task<ResponseModule<List<LiveRoom>>>() {
             @Override public ResponseModule<List<LiveRoom>> onRequest() throws HyphenateException {
                 if(!isLoadMore){
@@ -124,6 +133,53 @@ public class LiveListFragment extends Fragment {
                 hideLoadingView(isLoadMore);
             }
         });
+    }
+
+    private void loadGiftList() {
+      /*  ThreadPoolManager.getInstance().executeTask(new ThreadPoolManager.Task<Result<List<Gift>>>() {
+            @Override
+            public Result<List<Gift>> onRequest() throws HyphenateException {
+                return (Result<List<Gift>>) ApiManager.get().getAllGifts();
+                //这个放在这里面写的意义何在?
+                //而且显示为类型转换异常,arraylist不能转化为reuslt
+                //java.lang.ClassCastException: java.util.ArrayList cannot be cast to cn.ucai.live.data.model11.Result
+            }
+
+            @Override
+            public void onSuccess(Result<List<Gift>> listResult) {
+                Log.e(TAG, "onSuccess: listResult="+listResult);
+                if(listResult!=null&&listResult.isRetMsg()){
+                    List<Gift> list=listResult.getRetData();
+                    if(list!=null){
+                        Log.e(TAG, "onSuccess: list.size()="+list.size());
+                        for (Gift g:list){
+                            Log.e(TAG, "onSuccess: g="+g);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onError(HyphenateException exception) {
+
+            }
+        });*/
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Gift> allGifts = ApiManager.get().getAllGifts();
+                    if(allGifts!=null){
+                        Log.e(TAG, "onSuccess: list.size()="+allGifts.size());
+                        for (Gift g:allGifts){
+                            Log.e(TAG, "onSuccess: g="+g);
+                        }
+                    }
+                } catch (LiveException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void hideLoadingView(boolean isLoadMore){

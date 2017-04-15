@@ -10,12 +10,15 @@ import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.ucai.live.data.model.IUserModel;
 import cn.ucai.live.data.model.OnCompleteListener;
 import cn.ucai.live.data.model.UserModel;
+import cn.ucai.live.data.restapi.ApiManager;
+import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.utils.I;
 import cn.ucai.live.utils.PreferenceManager;
 import cn.ucai.live.utils.Result;
@@ -159,8 +162,32 @@ public class UserProfileManager {
 					}
 				});
 	}
-	public void asyncGetCurrentAppUserInfo() {
-		//异步取得本地用户数据
+	public void updateCurrentAppUserInfo(User user){
+		currentAppUser = user;
+		setCurrentAppUserNick(user.getMUserNick());
+		setCurrentAppUserAvatar(user.getAvatar());
+	}
+	public void asyncGetCurrentAppUserInfo(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				User user = null;
+				try {
+					try {
+						user = ApiManager.get().loadUserInfo(EMClient.getInstance().getCurrentUser());
+					} catch (LiveException e) {
+						e.printStackTrace();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if(user!=null){
+					updateCurrentAppUserInfo(user);
+				}
+			}
+		}).start();
+
+	/*	//异步取得本地用户数据
 		userModel.loadUserInfo(appContext, EMClient.getInstance().getCurrentUser(),
 				new OnCompleteListener<String>() {
 					@Override
@@ -187,7 +214,7 @@ public class UserProfileManager {
 					public void onError(String error) {
 
 					}
-				});
+				});*/
 	}
 
 	private void setCurrentAppUserNick(String nickname){

@@ -4,6 +4,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import cn.ucai.live.LiveApplication;
 import cn.ucai.live.data.model.LiveRoom;
+import cn.ucai.live.data.model.LiveService;
+import cn.ucai.live.data.model.User;
+import cn.ucai.live.data.model11.Gift;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
 import cn.ucai.live.data.restapi.model.ResponseModule;
 import cn.ucai.live.data.restapi.model.StatisticsType;
@@ -11,6 +14,10 @@ import com.hyphenate.chat.EMClient;
 import java.io.IOException;
 import java.util.List;
 
+import cn.ucai.live.utils.I;
+import cn.ucai.live.utils.L;
+import cn.ucai.live.utils.Result;
+import cn.ucai.live.utils.ResultUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -19,21 +26,25 @@ import okhttp3.RequestBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by wei on 2017/2/14.
  */
 
 public class ApiManager {
+    private static final String TAG = "ApiManager";
     private String appkey;
     private ApiService apiService;
-
+    private LiveService liveService;
     private static  ApiManager instance;
 
     private ApiManager(){
+        //拼接,apikey,都拼接好后创建,apiService
         try {
             ApplicationInfo appInfo = LiveApplication.getInstance().getPackageManager().getApplicationInfo(
                     LiveApplication.getInstance().getPackageName(), PackageManager.GET_META_DATA);
@@ -57,7 +68,14 @@ public class ApiManager {
                 .build();
 
         apiService = retrofit.create(ApiService.class);
-
+        //// FIXME: 2017/4/14 仿照上面的写请求的固定前半部分,并且导入自己写的类
+        Retrofit liveRetrofit=new Retrofit.Builder()
+                .baseUrl(I.SERVER_ROOT)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .client(httpClient)
+                .build();
+        liveService =liveRetrofit.create(LiveService.class);
+        //--->
     }
 
 
@@ -82,7 +100,95 @@ public class ApiManager {
         }
         return instance;
     }
+    //// FIXME: 2017/4/14 然后就是调用,这样大概就是让外面的方法调用的比较少
+    public List<Gift> getAllGifts() throws LiveException {
+        Call<String> call = liveService.getAllGifts();
+        Result<List<Gift>> result = handleResponseCallToResultList(call, Gift.class);
+        if(result!=null&result.isRetMsg()){
+            return result.getRetData();
+        }
+return null;
+       /* allGifts.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+            //这里原来的String result现在从response中拿,其他的还是和以前一样
+                String s = response.body();
+                Result result = ResultUtils.getResultFromJson(s, Gift.class);
+                if(result!=null&&result.isRetMsg()){
+                    List<Gift> list = (List<Gift>) result.getRetData();
+                    for(Gift gift:list){
+                        L.e(TAG,"gift:"+gift);
+                    }
+                }
+            }
 
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                L.e(TAG,"onFailure="+t.toString());
+            }
+        });*/
+    }
+    //// FIXME: 2017/4/14 异步加载,同步获取
+    public com.hyphenate.easeui.domain.User loadUserInfo(String username) throws IOException, LiveException {
+        com.hyphenate.easeui.domain.User user=null;
+        Call<String> call = liveService.loadUserInfo(username);
+        //上面的enqueue是异步操作,execute是同步的方法
+        //异步就是两个不同的事同一个人同一时间做
+        //同步就是两件事顺着做下来,比如你撕开方便面再吃
+        /*Response<String> response = call.execute();//抛出异常
+        String body = response.body();
+        //同步和异步只是多转了一次
+        Result result = ResultUtils.getResultFromJson(body, User.class);
+        if(result!=null&&result.isRetMsg()){
+            user= (com.hyphenate.easeui.domain.User) result.getRetData();
+        }
+        return user;*/
+        Result<com.hyphenate.easeui.domain.User> result = handleResponseCallToResult(call, com.hyphenate.easeui.domain.User.class);
+       if(result!=null&&result.isRetMsg()){
+            result.getRetData();
+       }
+        return null;
+    }
+    //------>
+    //// FIXME: 2017/4/14 然后觉的别人的写法好,我们就看着能不能自己仿写
+    private <T> Result<T>handleResponseCallToResult(Call<String> responseCall,Class<T> clazz) throws LiveException{
+        try {
+            Response<String> response = responseCall.execute();
+            if(!response.isSuccessful()){
+                throw new LiveException(response.code(), response.errorBody().string());
+            }
+            String body = response.body();
+            //同步和异步只是多转了一次
+           // Result result = ResultUtils.getResultFromJson(body, User.class);
+           // if(result!=null&&result.isRetMsg()){
+             //   user= (com.hyphenate.easeui.domain.User) result.getRetData();
+          // }
+           //return response;
+            return ResultUtils.getResultFromJson(body, clazz);
+        } catch (IOException e) {
+            throw new LiveException(e.getMessage());
+        }
+    }
+    //还写一个list的
+    private <T> Result<List<T>>handleResponseCallToResultList(Call<String> responseCall,Class<T> clazz) throws LiveException{
+        try {
+            Response<String> response = responseCall.execute();
+            if(!response.isSuccessful()){
+                throw new LiveException(response.code(), response.errorBody().string());
+            }
+            String body = response.body();
+            //同步和异步只是多转了一次
+            // Result result = ResultUtils.getResultFromJson(body, User.class);
+            // if(result!=null&&result.isRetMsg()){
+            //   user= (com.hyphenate.easeui.domain.User) result.getRetData();
+            // }
+            //return response;
+            return ResultUtils.getListResultFromJson(body, clazz);
+        } catch (IOException e) {
+            throw new LiveException(e.getMessage());
+        }
+    }
+    //
 
     public LiveRoom createLiveRoom(String name, String description, String coverUrl) throws LiveException {
         return createLiveRoomWithRequest(name, description, coverUrl, null);

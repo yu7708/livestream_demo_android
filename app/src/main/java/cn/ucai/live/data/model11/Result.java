@@ -1,7 +1,7 @@
-package cn.ucai.live.utils;
+package cn.ucai.live.data.model11;
 
 import java.io.Serializable;
-//// FIXME: 2017/4/14 仿照环信的修改对象或者泛型为泛型T,这样好像是为了能够不必强转
+
 public class Result<T> implements Serializable {
 	private int retCode = -1;
 	private boolean retMsg;

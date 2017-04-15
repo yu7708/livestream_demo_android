@@ -17,8 +17,8 @@ import java.util.List;
  * Created by clawpo on 2016/9/21.
  */
 public class ResultUtils {
-    public static <T> Result getResultFromJson(String jsonStr,Class<T> clazz){
-        Result result = new Result();
+    public static <T> Result<T> getResultFromJson(String jsonStr,Class<T> clazz){
+        Result<T> result = new Result<T>();
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
             result.setRetCode(jsonObject.getInt("retCode"));
@@ -50,8 +50,8 @@ public class ResultUtils {
         return  null;
     }
 
-    public static <T> Result getListResultFromJson(String jsonStr, Class<T> clazz){
-        Result result = new Result();
+    public static <T> Result<List<T>> getListResultFromJson(String jsonStr, Class<T> clazz){
+        Result<List<T>> result = new Result<List<T>>();
         Log.e("Utils","jsonStr="+jsonStr);
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);

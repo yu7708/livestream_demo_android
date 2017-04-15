@@ -23,6 +23,8 @@ public class ThreadPoolManager {
             @Override public Thread newThread(@NonNull Runnable r) {
                 Thread thread = new Thread(r){
                     @Override public void run() {
+                        //// FIXME: 2017/4/15 线程池
+                        //所谓的线程池管理,先实例化,开启线程工厂模式,然后接收一个Runnable进行判断，里面什么都没写
                         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
                         super.run();
                     }
