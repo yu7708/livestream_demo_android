@@ -456,17 +456,21 @@ public abstract class LiveBaseActivity extends BaseActivity {
     }
 
     private synchronized void onRoomMemberExited(final String name) {
+        //踢人,这里自减注释,踢人就不会改变
         memberList.remove(name);
         membersCount--;
         EMLog.e(TAG, name + "exited");
         runOnUiThread(new Runnable() {
             @Override public void run() {
-                audienceNumView.setText(String.valueOf(membersCount));
+               // audienceNumView.setText(String.valueOf(membersCount));
+                audienceNumView.setText(String.valueOf(memberList.size()+1));
                 horizontalRecyclerView.getAdapter().notifyDataSetChanged();
                 if(name.equals(anchorId)){
                     showLongToast("主播已结束直播");
                 }
+
             }
+
         });
     }
 
