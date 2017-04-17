@@ -405,6 +405,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
                             memberList.add(i, tempList.get(i));
                         }
                     }
+                    memberList.addAll(tempList);
                 } catch (HyphenateException e) {
                     e.printStackTrace();
                 }
@@ -540,10 +541,11 @@ public abstract class LiveBaseActivity extends BaseActivity {
                 }
             });
             //暂时使用测试数据
-            Glide.with(context)
+           /* Glide.with(context)
                     .load(avatarRepository.getAvatar())
                     .placeholder(R.drawable.ease_default_avatar)
-                    .into(holder.Avatar);
+                    .into(holder.Avatar);*/
+           EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,namelist.get(position),holder.Avatar);
         }
 
         @Override public int getItemCount() {

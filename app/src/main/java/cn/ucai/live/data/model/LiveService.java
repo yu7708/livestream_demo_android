@@ -18,7 +18,7 @@ public interface LiveService {
     Call<String> getAllGifts();
 
     @GET("findUserByUserName")
-    Call<String> loadUserInfo(@Query(I.User.USER_NAME) String uesrname);
+    Call<String> loadUserInfo(@Query(I.User.USER_NAME) String username);
 
     @GET("live/createChatRoom")
     Call<String> createChatRoom(

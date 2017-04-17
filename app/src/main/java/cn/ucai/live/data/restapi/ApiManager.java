@@ -208,7 +208,7 @@ return null;
         //这个调用的上面的方法,所以也是一个String的类型
         Log.e(TAG, "createLiveRoom: name="+name+",description="+description );
         return createLiveRoom("1IFgE",name,description,EMClient.getInstance().getCurrentUser(),
-                300,EMClient.getInstance().getCurrentUser());
+                300,EMClient.getInstance().getCurrentUser()+",chen123,xsh123,hhhhh,nb,gsd123,zhu123456,seven009,cccccg");
     }
 
     //f------>
