@@ -107,7 +107,7 @@ public class ApiManager {
     public List<Gift> getAllGifts() throws LiveException {
         Call<String> call = liveService.getAllGifts();
         Result<List<Gift>> result = handleResponseCallToResultList(call, Gift.class);
-        if(result!=null&result.isRetMsg()){
+        if(result!=null&&result.isRetMsg()){
             return result.getRetData();
         }
 return null;
@@ -201,10 +201,11 @@ return null;
 
             Response<String> response = call.execute();
             //这一步的返回就相当于原来的调用了,方法是不变的,加深是原来没看到的暴露出的越多
-             return ResultUtils.getResultFromJson(response.body());
+             return ResultUtils.getEMResultFromJson(response.body());
     }
     public String createLiveRoom(String name,String description) throws IOException {
         //这个调用的上面的方法,所以也是一个String的类型
+        Log.e(TAG, "createLiveRoom: name="+name+",description="+description );
         return createLiveRoom("1IFgE",name,description,EMClient.getInstance().getCurrentUser(),
                 300,EMClient.getInstance().getCurrentUser());
     }
@@ -226,6 +227,7 @@ return null;
         liveRoom.setCover(coverUrl);
         //// FIXME: 2017/4/15 在此调用自己写的创建聊天室的方法,判断返回的id,仿照下面的方法写
         String id = createLiveRoom(name, description);
+        L.e(TAG,"id="+id);
         if(id!=null){
             liveRoom.setId(id);
             liveRoom.setChatroomId(id);

@@ -26,7 +26,7 @@ public interface LiveService {
             @Query("name")String name,
             @Query("description")String description,
             @Query("owner")String owner,
-            @Query("maxuser")int maxuser,
+            @Query("maxusers")int maxuser,
             @Query("members")String members
     );
 }

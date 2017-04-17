@@ -35,6 +35,8 @@ import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMCmdMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.easeui.utils.EaseUserUtils;
+import com.hyphenate.easeui.widget.EaseImageView;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 import java.util.ArrayList;
@@ -98,11 +100,19 @@ public abstract class LiveBaseActivity extends BaseActivity {
         liveId = liveRoom.getId();
         chatroomId = liveRoom.getChatroomId();
         anchorId = liveRoom.getAnchorId();
+        //到这里才到onActivityCrate
         onActivityCreate(savedInstanceState);
-        usernameView.setText(anchorId);
+        initAnchor();
+        //usernameView.setText(anchorId);
         liveIdView.setText(liveId);
         audienceNumView.setText(String.valueOf(liveRoom.getAudienceNum()));
         watchedCount = liveRoom.getAudienceNum();
+    }
+    @BindView(R.id.iv_anchor_Avatar)
+    EaseImageView ivAnchorAvatar;
+    private void initAnchor() {
+        EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(),usernameView);
+        EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,EMClient.getInstance().getCurrentUser(),ivAnchorAvatar);
     }
 
     protected Handler handler = new Handler();

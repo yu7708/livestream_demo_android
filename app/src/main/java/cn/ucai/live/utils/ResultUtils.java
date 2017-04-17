@@ -107,7 +107,7 @@ public class ResultUtils {
         }
         return  null;
     }*/
-    public static String getResultFromJson(String jsonStr){
+    public static String getEMResultFromJson(String jsonStr){
         //// FIXME: 2017/4/15 新增的方法用来判断返回生成的Id的
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
