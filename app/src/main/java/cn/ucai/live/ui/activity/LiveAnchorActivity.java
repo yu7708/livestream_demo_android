@@ -28,6 +28,7 @@ import com.ucloud.ulive.UVideoProfile;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.ucai.live.LiveApplication;
 import cn.ucai.live.R;
 import cn.ucai.live.data.restapi.ApiManager;
 import cn.ucai.live.data.restapi.LiveException;
@@ -186,7 +187,7 @@ public class LiveAnchorActivity extends LiveBaseActivity {
        // usernameView.setText(EMClient.getInstance().getCurrentUser());
         //EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(),usernameView);
         EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(),usernameView);
-        Log.e(TAG, "showConfirmCloseLayout:setAppUserNick"+EMClient.getInstance().getCurrentUser().toString() );
+        Log.e(TAG, "showConfirmCloseLayout:setAppUserNick"+ EMClient.getInstance().getCurrentUser().toString() );
         EaseUserUtils.setAppUserAvatar(LiveAnchorActivity.this,EMClient.getInstance().getCurrentUser(),viewById);
         watchedCountView.setText(watchedCount + "人看过");
 

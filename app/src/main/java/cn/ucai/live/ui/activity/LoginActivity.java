@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,7 +32,7 @@ import com.hyphenate.chat.EMClient;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends BaseActivity {
-
+  private static final String TAG = "LoginActivity";
 
   // UI references.
   private AutoCompleteTextView mEmailView;
@@ -134,7 +135,9 @@ public class LoginActivity extends BaseActivity {
         @Override public void onSuccess() {
           //// FIXME: 2017/4/13 登录成功还要异步加载信息,也要修改sf里的用户名
           PreferenceManager.getInstance().setCurrentUserName(EMClient.getInstance().getCurrentUser());
+          Log.e(TAG, "onSuccess: username"+EMClient.getInstance().getCurrentUser() );
           LiveHelper.getInstance().getUserProfileManager().asyncGetCurrentAppUserInfo();
+          Log.e(TAG, "onSuccess: ===============" );
           //异步加载信息
           LiveHelper.getInstance().syncLoadGiftList();
             startActivity(new Intent(LoginActivity.this, MainActivity.class));

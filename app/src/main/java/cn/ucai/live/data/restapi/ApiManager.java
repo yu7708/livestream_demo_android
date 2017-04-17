@@ -7,12 +7,13 @@ import android.util.Log;
 import cn.ucai.live.LiveApplication;
 import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.model.LiveService;
-import cn.ucai.live.data.model.User;
 import cn.ucai.live.data.model11.Gift;
 import cn.ucai.live.data.restapi.model.LiveStatusModule;
 import cn.ucai.live.data.restapi.model.ResponseModule;
 import cn.ucai.live.data.restapi.model.StatisticsType;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.domain.User;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -132,8 +133,8 @@ return null;
         });*/
     }
     //// FIXME: 2017/4/14 异步加载,同步获取
-    public com.hyphenate.easeui.domain.User loadUserInfo(String username) throws IOException, LiveException {
-        com.hyphenate.easeui.domain.User user=null;
+    public User loadUserInfo(String username) throws IOException, LiveException {
+        //com.hyphenate.easeui.domain.User user=null;
         Call<String> call = liveService.loadUserInfo(username);
         //上面的enqueue是异步操作,execute是同步的方法
         //异步就是两个不同的事同一个人同一时间做
@@ -146,9 +147,9 @@ return null;
             user= (com.hyphenate.easeui.domain.User) result.getRetData();
         }
         return user;*/
-        Result<com.hyphenate.easeui.domain.User> result = handleResponseCallToResult(call, com.hyphenate.easeui.domain.User.class);
+        Result<User> result = handleResponseCallToResult(call,User.class);
        if(result!=null&&result.isRetMsg()){
-            result.getRetData();
+            return result.getRetData();
        }
         return null;
     }

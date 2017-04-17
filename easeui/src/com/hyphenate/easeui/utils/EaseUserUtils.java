@@ -100,7 +100,9 @@ public class EaseUserUtils {
     }
     public static void setAppUserNick(String username,TextView textView){
         if(textView!=null){
-            User user=new User(username);
+            //User user=new User(username);
+            User user=getAppUserInfo(username);
+            Log.e(TAG, "setAppUserNick: username"+username);
             setAppUserNick(user,textView);
         }
     }

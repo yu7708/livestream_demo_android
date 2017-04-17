@@ -163,6 +163,7 @@ public class UserProfileManager {
 				});
 	}
 	public void updateCurrentAppUserInfo(User user){
+		Log.e(TAG, "updateCurrentAppUserInfo: user======="+user );
 		currentAppUser = user;
 		setCurrentAppUserNick(user.getMUserNick());
 		setCurrentAppUserAvatar(user.getAvatar());

@@ -74,6 +74,7 @@ public class RegisterActivity extends BaseActivity {
                                     boolean sucess=false;
                                     if(s!=null){
                                         Result result = ResultUtils.getResultFromJson(s, User.class);
+                                        Log.e(TAG, "onSuccess: result="+result );
                                         //这里还要考虑注册失败的问题
                                         if(result!=null){
                                            if(result.isRetMsg()){
@@ -127,6 +128,7 @@ public class RegisterActivity extends BaseActivity {
                            // showToast("注册成功");
                             Toast.makeText(RegisterActivity.this, username.getText().toString() + "...." +password.getText().toString(), Toast.LENGTH_SHORT).show();
                             //// FIXME: 2017/4/12 注册成功,跳转至登录
+                            Log.e(TAG, "run: username="+username.getText().toString() );
                             PreferenceManager.getInstance().setCurrentUserName(username.getText().toString());
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                             finish();
