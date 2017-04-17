@@ -95,7 +95,8 @@ public class LiveListFragment extends Fragment {
             loadmorePB.setVisibility(View.VISIBLE);
         isLoading = true;
         //// FIXME: 2017/4/14
-        loadGiftList();
+        //loadGiftList();
+
         //--->
         ThreadPoolManager.getInstance().executeTask(new ThreadPoolManager.Task<ResponseModule<List<LiveRoom>>>() {
             @Override public ResponseModule<List<LiveRoom>> onRequest() throws HyphenateException {
@@ -164,7 +165,8 @@ public class LiveListFragment extends Fragment {
 
             }
         });*/
-        new Thread(new Runnable() {
+      //// FIXME: 2017/4/15 这就是原来实验用的,现在写了数据库就删掉
+       /* new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -179,7 +181,7 @@ public class LiveListFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        }).start();*/
     }
 
     private void hideLoadingView(boolean isLoadMore){

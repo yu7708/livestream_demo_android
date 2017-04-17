@@ -135,7 +135,8 @@ public class LoginActivity extends BaseActivity {
           //// FIXME: 2017/4/13 登录成功还要异步加载信息,也要修改sf里的用户名
           PreferenceManager.getInstance().setCurrentUserName(EMClient.getInstance().getCurrentUser());
           LiveHelper.getInstance().getUserProfileManager().asyncGetCurrentAppUserInfo();
-
+          //异步加载信息
+          LiveHelper.getInstance().syncLoadGiftList();
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
