@@ -89,17 +89,25 @@ public class RoomUserDetailsDialog extends DialogFragment {
 
             EMChatRoom chatRoom = EMClient.getInstance().chatroomManager().getChatRoom(chatroomId);
             List<String> adminList = chatRoom.getAdminList();
+            //首先是判断,这个人是房间的拥有者的话,就看不见设为房管按钮
             if (!EMClient.getInstance().getCurrentUser().equals(chatRoom.getOwner())) {
                 setAdminButton.setVisibility(View.INVISIBLE);
+                //得到聊天室的列表里如果不包含有当前的用户，或者点击的这个人名不是
                 if (!adminList.contains(EMClient.getInstance().getCurrentUser()) ||
                         username.equals(EMClient.getInstance().getCurrentUser()) ||
-                        username.equals(chatRoom.getOwner())) {
+                        username.equals(chatRoom.getOwner()) ||
+                        adminList.contains(username)){
                     managementLayout.setVisibility(View.INVISIBLE);
                 }
             } else {
                 if (username.equals(EMClient.getInstance().getCurrentUser())) {
                     setAdminButton.setVisibility(View.INVISIBLE);
                     managementLayout.setVisibility(View.INVISIBLE);
+                }else{
+                    //如果列表包含当前点击,设为看不见
+                    if(adminList.contains(username)){
+                        setAdminButton.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
         }
@@ -123,6 +131,7 @@ public class RoomUserDetailsDialog extends DialogFragment {
                     Toast.makeText(getContext(), "当前网络不佳", Toast.LENGTH_SHORT).show();
                 }
             });
+            //不显示默认的为用户名了,写了加载用户信息获得点击用户的名称,写在上面了
             //usernameView.setText(username);
             EaseUserUtils.setAppUserAvatar(getContext(), username,ivFragmentRoomUserDetailsAvatar );
         }
