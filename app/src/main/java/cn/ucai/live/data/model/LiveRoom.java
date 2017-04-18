@@ -1,5 +1,7 @@
 package cn.ucai.live.data.model;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
@@ -7,6 +9,7 @@ import java.io.Serializable;
  * Created by wei on 2016/5/27.
  */
 public class LiveRoom implements Serializable {
+    private static final String TAG = "LiveRoom";
     @SerializedName(value = "liveroom_id", alternate = {"id"})
     private String id;
     @SerializedName("title")

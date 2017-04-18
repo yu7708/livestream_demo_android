@@ -283,7 +283,7 @@ public class LiveAnchorActivity extends LiveBaseActivity {
         //mEasyStreaming.onResume();
 
         //// FIXME: 2017/4/17 暂切
-        //startPreview();
+        startPreview();
         //--f>
 
         if (isStarted) {
