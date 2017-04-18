@@ -60,7 +60,9 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
         connect();
     }
     private void connect(){
-        connectChatServer();
+        //// FIXME: 2017/4/18 这里是创建直播间
+       // connectChatServer();
+        loadingLayout.setVisibility(View.INVISIBLE);
     }
 
     private void connectChatServer(){
@@ -72,6 +74,9 @@ public class LiveAudienceActivity extends LiveBaseActivity implements UPlayerSta
 
             @Override public void onSuccess(LiveStatusModule.LiveStatus status) {
                 loadingLayout.setVisibility(View.INVISIBLE);
+                if(status==null){
+                    return;
+                }
                 switch (status){
                     case completed: //complete状态允许用户加入聊天室
                         showLongToast("直播已结束");

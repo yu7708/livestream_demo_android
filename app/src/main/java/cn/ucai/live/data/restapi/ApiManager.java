@@ -237,7 +237,7 @@ return null;
         if(id!=null){
             liveRoom.setId(id);
             liveRoom.setChatroomId(id);
-            //// FIXME: 2017/4/18 改
+            //// FIXME: 2017/4/18 改,设置推流和拉流
             liveRoom.setLivePullUrl(liveRoom.getLivePullUrl());
             liveRoom.setLivePushUrl(liveRoom.getLivePushUrl());
         }else{

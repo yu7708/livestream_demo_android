@@ -171,7 +171,9 @@ public class LiveListFragment extends Fragment {
                                 for(EMChatRoom room:chatRooms){
                                     Log.e(TAG, "run: room="+room.getName() );
                                     LiveRoom liveRoom = showLive2List(room);
+                                    //设置对象
                                     if(liveRoom!=null){
+                                        //直播室添加是所有房间
                                         liveRoomList.add(liveRoom);
                                     }
                                 }
@@ -203,13 +205,15 @@ public class LiveListFragment extends Fragment {
             //添加一个保护,不然总是下标越界,
             if(room.getName().indexOf(s)>0) {
                 int i = room.getName().indexOf(s);
-                String name1 = room.getName().substring(0, i + 1);
+                String name1 = room.getName().substring(0, i);
                 Log.e(TAG, "showLive2List: name1===" + name1);
                 String name2 = room.getName().substring(i + s.length());
                 Log.e(TAG, "showLive2List: name2===" + name2);
                 // liveroom.setName(room.getName());
                 liveroom.setName(name1);
-                liveroom.setCover("https://a1.easemob.com/i/superwechat201612.chatfiles/" + name2);
+                Log.e("leary", "https://a1.easemob.com/i/superwechat201612/chatfiles/" + name2);
+                liveroom.setCover("https://a1.easemob.com/i/superwechat201612/chatfiles/"+ name2);
+                                //"http://a1.easemob.com/i/superwechat201612/chatfiles/"
             }else{
                 liveroom.setName(room.getName());
             }

@@ -356,14 +356,16 @@ public abstract class LiveBaseActivity extends BaseActivity {
     }
 
     private void showUserDetailsDialog(String username) {
-        RoomUserDetailsDialog dialog = RoomUserDetailsDialog.newInstance(username, liveRoom);
+        final RoomUserDetailsDialog dialog = RoomUserDetailsDialog.newInstance(username, liveRoom);
         dialog.setManageEventListener(new RoomUserDetailsDialog.RoomManageEventListener() {
             @Override public void onKickMember(String username) {
                 onRoomMemberExited(username);
+                dialog.dismiss();
             }
 
             @Override public void onAddBlacklist(String username) {
                 onRoomMemberExited(username);
+                dialog.dismiss();
             }
         });
         dialog.show(getSupportFragmentManager(), "RoomUserDetailsDialog");

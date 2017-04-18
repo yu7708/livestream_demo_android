@@ -3,6 +3,8 @@ package cn.ucai.live.data.model;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
+import cn.ucai.live.ucloud.AVOption;
+
 /**
  * Created by wei on 2016/5/27.
  */
@@ -84,8 +86,9 @@ public class LiveRoom implements Serializable {
         this.description = description;
     }
 
+    //加层保护
     public String getLivePushUrl() {
-        return livePushUrl;
+        return livePushUrl!=null?livePushUrl:AVOption.pushUrl;
     }
 
     public void setLivePushUrl(String livePushUrl) {
@@ -93,7 +96,7 @@ public class LiveRoom implements Serializable {
     }
 
     public String getLivePullUrl() {
-        return livePullUrl;
+        return livePullUrl!=null?livePullUrl: AVOption.playUrl;
     }
 
     public void setLivePullUrl(String livePullUrl) {

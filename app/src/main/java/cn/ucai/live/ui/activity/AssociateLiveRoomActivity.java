@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,7 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AssociateLiveRoomActivity extends BaseActivity {
-
+    private static final String TAG = "AssociateLiveRoomActivi";
     private static final int REQUEST_CODE_PICK = 1;
     private static final int REQUEST_CODE_CUTTING = 2;
 
@@ -173,6 +174,9 @@ public class AssociateLiveRoomActivity extends BaseActivity {
                                 String uuid = entitys.getString("uuid");
                                 String url = jsonObj.getString("uri");
                                 coverUrl = url + "/" + uuid;
+                                Log.e(TAG, "onSuccess: uuid==="+uuid);
+                                Log.e(TAG, "onSuccess: url==="+url );
+                                Log.e(TAG, "onSuccess: coverUrl==="+coverUrl );
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
