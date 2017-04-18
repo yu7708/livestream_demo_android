@@ -226,12 +226,20 @@ return null;
         liveRoom.setDescription(description);
         liveRoom.setAnchorId(EMClient.getInstance().getCurrentUser());
         liveRoom.setCover(coverUrl);
+        //显示的地址是什么呢
+        Log.e(TAG, "createLiveRoomWithRequest: setCover=="+ coverUrl);
+        //// FIXME: 2017/4/18 创建直播的主界面的显示你上传的图片
+        String cover=coverUrl.substring(coverUrl.lastIndexOf("/")+1);
+        String name1=name+"#live201612#"+cover;
         //// FIXME: 2017/4/15 在此调用自己写的创建聊天室的方法,判断返回的id,仿照下面的方法写
-        String id = createLiveRoom(name, description);
+        String id = createLiveRoom(name1, description);
         L.e(TAG,"id="+id);
         if(id!=null){
             liveRoom.setId(id);
             liveRoom.setChatroomId(id);
+            //// FIXME: 2017/4/18 改
+            liveRoom.setLivePullUrl(liveRoom.getLivePullUrl());
+            liveRoom.setLivePushUrl(liveRoom.getLivePushUrl());
         }else{
             //这个id是传过来的id
             liveRoom.setId(liveRoomId);

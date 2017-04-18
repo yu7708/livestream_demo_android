@@ -93,7 +93,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
     protected EMChatRoom chatroom;
     private static final int MAX_SIZE = 10;
     LinkedList<String> memberList = new LinkedList<>();
-
+    //创建房间号
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         liveRoom = (LiveRoom) getIntent().getSerializableExtra("liveroom");
@@ -456,22 +456,25 @@ public abstract class LiveBaseActivity extends BaseActivity {
     }
 
     private synchronized void onRoomMemberExited(final String name) {
-        //踢人,这里自减注释,踢人就不会改变
-        memberList.remove(name);
-        membersCount--;
-        EMLog.e(TAG, name + "exited");
-        runOnUiThread(new Runnable() {
-            @Override public void run() {
-               // audienceNumView.setText(String.valueOf(membersCount));
-                audienceNumView.setText(String.valueOf(memberList.size()+1));
-                horizontalRecyclerView.getAdapter().notifyDataSetChanged();
-                if(name.equals(anchorId)){
-                    showLongToast("主播已结束直播");
+        if(memberList.remove(name)){
+            //踢人,这里自减注释,踢人就不会改变
+
+            membersCount--;
+            EMLog.e(TAG, name + "exited");
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    // audienceNumView.setText(String.valueOf(membersCount));
+                    audienceNumView.setText(String.valueOf(memberList.size()+1));
+                    horizontalRecyclerView.getAdapter().notifyDataSetChanged();
+                    if(name.equals(anchorId)){
+                        showLongToast("主播已结束直播");
+                    }
+
                 }
 
-            }
+            });
+        }
 
-        });
     }
 
     protected void postUserChangeEvent(final StatisticsType type, final String username) {
