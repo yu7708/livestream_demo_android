@@ -178,8 +178,8 @@ public class LiveCameraView extends UAspectFrameLayout implements TextureView.Su
 
     private void innerStartPreview(UStreamingProfile profile) {
 
-//        setShowMode(Mode.ORIGIN);
-        setShowMode(Mode.FULL);
+        setShowMode(Mode.ORIGIN);
+//        setShowMode(Mode.FULL);
 
         streamEnvHolder.easyStreamer = getInstance();
 

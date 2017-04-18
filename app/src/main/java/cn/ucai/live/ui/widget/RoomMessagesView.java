@@ -2,10 +2,12 @@ package cn.ucai.live.ui.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +19,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cn.ucai.live.R;
+import cn.ucai.live.utils.I;
+
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMConversation;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMTextMessageBody;
+import com.hyphenate.exceptions.HyphenateException;
 
 /**
  * Created by wei on 2016/6/3.
  */
 public class RoomMessagesView extends RelativeLayout{
+    private static final String TAG = "RoomMessagesView";
     private EMConversation conversation;
     ListAdapter adapter;
 
@@ -57,6 +63,7 @@ public class RoomMessagesView extends RelativeLayout{
         LayoutInflater.from(context).inflate(R.layout.widget_room_messages, this);
         listview = (RecyclerView) findViewById(R.id.listview);
         editview = (EditText) findViewById(R.id.edit_text);
+        editview.setTextColor(Color.BLUE);
         sendBtn = (Button) findViewById(R.id.btn_send);
         closeView = (ImageView) findViewById(R.id.close_image);
         sendContainer = findViewById(R.id.container_send);
@@ -164,12 +171,25 @@ public class RoomMessagesView extends RelativeLayout{
         public void onBindViewHolder(MyViewHolder holder, int position) {
             final EMMessage message = messages[position];
             if(message.getBody() instanceof EMTextMessageBody) {
-                holder.name.setText(message.getFrom());
+                //holder.name.setText(message.getFrom());
+                //修改
+                String nick=null;
+                try {
+                    nick=message.getStringAttribute(I.User.NICK);
+                } catch (HyphenateException e) {
+                    e.printStackTrace();
+                }
+                Log.e(TAG,"RoomMessageView,onBindViewHolder,nick="+nick);
+                if(nick==null){
+                    nick = message.getFrom();
+                }
+                Log.e(TAG,"RoomMessageView,onBindViewHolder,nick="+nick);
+                holder.name.setText(nick);
                 holder.content.setText(((EMTextMessageBody) message.getBody()).getMessage());
                 if (EMClient.getInstance().getCurrentUser().equals(message.getFrom())) {
                     holder.content.setTextColor(getResources().getColor(R.color.color_room_my_msg));
                 } else {
-                    holder.content.setTextColor(getResources().getColor(R.color.common_white));
+                    holder.content.setTextColor(getResources().getColor(R.color.color_room_my_msg));
                 }
                 holder.itemView.setOnClickListener(new OnClickListener() {
                     @Override public void onClick(View v) {

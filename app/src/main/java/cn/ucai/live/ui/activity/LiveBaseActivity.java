@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +27,8 @@ import cn.ucai.live.data.model.LiveRoom;
 import cn.ucai.live.data.restapi.ApiManager;
 import cn.ucai.live.data.restapi.LiveException;
 import cn.ucai.live.ui.widget.PeriscopeLayout;
+import cn.ucai.live.utils.I;
+import cn.ucai.live.utils.PreferenceManager;
 import cn.ucai.live.utils.Utils;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMChatRoomChangeListener;
@@ -111,8 +114,15 @@ public abstract class LiveBaseActivity extends BaseActivity {
     @BindView(R.id.iv_anchor_Avatar)
     EaseImageView ivAnchorAvatar;
     private void initAnchor() {
-        EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(),usernameView);
-        EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,EMClient.getInstance().getCurrentUser(),ivAnchorAvatar);
+        //后来点击别人的直播间显示的问题, 显示的是自己的名字,然而这是别人的直播间
+        if(anchorId.equals(EMClient.getInstance().getCurrentUser())){
+            EaseUserUtils.setAppUserNick(EMClient.getInstance().getCurrentUser(),usernameView);
+            EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,EMClient.getInstance().getCurrentUser(),ivAnchorAvatar);
+        }else{
+            //游客的用户名
+            usernameView.setText(anchorId);
+            EaseUserUtils.setAppUserAvatar(LiveBaseActivity.this,anchorId,ivAnchorAvatar);
+        }
     }
 
     protected Handler handler = new Handler();
@@ -296,6 +306,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
                         //    barrageLayout.addBarrage(content,
                         //            EMClient.getInstance().getCurrentUser());
                         //}
+                        message.setAttribute(I.User.NICK, PreferenceManager.getInstance().getCurrentUserNick());
                         message.setChatType(EMMessage.ChatType.ChatRoom);
                         EMClient.getInstance().chatManager().sendMessage(message);
                         message.setMessageStatusCallback(new EMCallBack() {

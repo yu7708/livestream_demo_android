@@ -11,7 +11,7 @@
         >
 
         <com.hyphenate.easeui.widget.EaseImageView
-            android:id="@+id/img_avatar"
+            android:id="@+id/img_avatar_1"
             android:layout_width="@dimen/size_avatar"
             android:layout_height="@dimen/size_avatar"
             android:layout_margin="10dp"

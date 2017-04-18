@@ -1,5 +1,7 @@
 package cn.ucai.live.data.model;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
@@ -9,6 +11,7 @@ import cn.ucai.live.ucloud.AVOption;
  * Created by wei on 2016/5/27.
  */
 public class LiveRoom implements Serializable {
+    private static final String TAG = "LiveRoom";
     @SerializedName(value = "liveroom_id", alternate = {"id"})
     private String id;
     @SerializedName("title")
@@ -88,7 +91,8 @@ public class LiveRoom implements Serializable {
 
     //加层保护
     public String getLivePushUrl() {
-        return livePushUrl!=null?livePushUrl:AVOption.pushUrl;
+        Log.e(TAG, "getLivePushUrl: AVOption.pushUrl_anchorId"+AVOption.pushUrl+"_"+anchorId);
+        return livePushUrl!=null?livePushUrl:AVOption.pushUrl+"_"+anchorId;
     }
 
     public void setLivePushUrl(String livePushUrl) {
@@ -96,7 +100,8 @@ public class LiveRoom implements Serializable {
     }
 
     public String getLivePullUrl() {
-        return livePullUrl!=null?livePullUrl: AVOption.playUrl;
+        Log.e(TAG, "getLivePushUrl: AVOption.playUrl_anchorId"+AVOption.playUrl+"_"+anchorId);
+        return livePullUrl!=null?livePullUrl: AVOption.playUrl+"_"+anchorId;
     }
 
     public void setLivePullUrl(String livePullUrl) {
