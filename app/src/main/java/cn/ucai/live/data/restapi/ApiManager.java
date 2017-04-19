@@ -208,7 +208,7 @@ return null;
         //这个调用的上面的方法,所以也是一个String的类型
         Log.e(TAG, "createLiveRoom: name="+name+",description="+description );
         return createLiveRoom("1IFgE",name,description,EMClient.getInstance().getCurrentUser(),
-                300,EMClient.getInstance().getCurrentUser()+",chen123,xsh123,hhhhh,nb,gsd123,zhu123456,seven009,cccccg");
+                300,EMClient.getInstance().getCurrentUser());
     }
 
     //f------>
@@ -227,12 +227,12 @@ return null;
         liveRoom.setAnchorId(EMClient.getInstance().getCurrentUser());
         liveRoom.setCover(coverUrl);
         //显示的地址是什么呢
-        Log.e(TAG, "createLiveRoomWithRequest: setCover=="+ coverUrl);
+      //  Log.e(TAG, "createLiveRoomWithRequest: setCover=="+ coverUrl);
         //// FIXME: 2017/4/18 创建直播的主界面的显示你上传的图片
-        String cover=coverUrl.substring(coverUrl.lastIndexOf("/")+1);
-        String name1=name+"#live201612#"+cover;
+       // String cover=coverUrl.substring(coverUrl.lastIndexOf("/")+1);
+       // String name1=name+"#live201612#"+cover;
         //// FIXME: 2017/4/15 在此调用自己写的创建聊天室的方法,判断返回的id,仿照下面的方法写
-        String id = createLiveRoom(name1, description);
+        String id = createLiveRoom(name, description);
         L.e(TAG,"id="+id);
         if(id!=null){
             liveRoom.setId(id);

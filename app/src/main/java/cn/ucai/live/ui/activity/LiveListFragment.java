@@ -93,11 +93,9 @@ public class LiveListFragment extends Fragment {
 
 
     private void showLiveList(final boolean isLoadMore){
+        //// FIXME: 2017/4/19 环信的方法可以使用了,删除掉原来的,原来显示的是聊天室,要显示的是直播间
         //// FIXME: 2017/4/18 这里定义一个自己的方法,是为了暂且屏蔽掉环信的
-        if (getLiveRoom()){
 
-            return;
-        }
         //--->
         if(!isLoadMore)
             swipeRefreshLayout.setRefreshing(true);
@@ -147,78 +145,7 @@ public class LiveListFragment extends Fragment {
         });
     }
 
-    private boolean getLiveRoom() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //从SuperWechat里拿出的房间的3个方法
-                final EMPageResult<EMChatRoom> result;
-                try {
-                    int pageCount = -1;
-                    result = EMClient.getInstance().chatroomManager()
-                            .fetchPublicChatRoomsFromServer(0, pageSize);
-                    //get chat room list
-                    final List<EMChatRoom> chatRooms = result.getData();
-                    pageCount = result.getPageCount();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.e(TAG, "run: chatRooms="+chatRooms );
-                            if(chatRooms!=null&&chatRooms.size()>0){
-                                Log.e(TAG, "run: chatRooms.size="+chatRooms.size() );
-                                swipeRefreshLayout.setRefreshing(false);
-                                liveRoomList.clear();
-                                for(EMChatRoom room:chatRooms){
-                                    Log.e(TAG, "run: room="+room.getName() );
-                                    LiveRoom liveRoom = showLive2List(room);
-                                    if(liveRoom!=null){
-                                        liveRoomList.add(liveRoom);
-                                    }
-                                }
-                                if(adapter==null){
-                                    adapter = new PhotoAdapter(getActivity(), liveRoomList);
-                                    recyclerView.setAdapter(adapter);
-                                }else{
-                                    adapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
 
-                } catch (HyphenateException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-        return true;
-    }
-
-    private LiveRoom showLive2List(EMChatRoom room) {
-        LiveRoom liveroom=null;
-        if(room!=null){
-            liveroom=new LiveRoom();
-            liveroom.setId(room.getOwner());
-            liveroom.setChatroomId(room.getId());
-            String s="#live201612#";
-            //添加一个保护,不然总是下标越界,
-            if(room.getName().indexOf(s)>0) {
-                int i = room.getName().indexOf(s);
-                String name1 = room.getName().substring(0, i + 1);
-                Log.e(TAG, "showLive2List: name1===" + name1);
-                String name2 = room.getName().substring(i + s.length());
-                Log.e(TAG, "showLive2List: name2===" + name2);
-                // liveroom.setName(room.getName());
-                liveroom.setName(name1);
-                liveroom.setCover("https://a1.easemob.com/i/superwechat201612.chatfiles/" + name2);
-            }else{
-                liveroom.setName(room.getName());
-            }
-            liveroom.setDescription(room.getDescription());
-            liveroom.setAnchorId(room.getId());
-            liveroom.setAudienceNum(room.getMemberCount());
-        }
-        return liveroom;
-    }
 
 
     private void loadGiftList() {
