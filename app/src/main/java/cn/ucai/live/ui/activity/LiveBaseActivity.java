@@ -85,7 +85,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
     //// FIXME: 2017/4/19
     volatile boolean isGiftShowing = false;
    volatile boolean isGift2Showing = false;
-   List<String> toShowList = Collections.synchronizedList(new LinkedList<String>());
+   List<EMMessage> toShowList = Collections.synchronizedList(new LinkedList<EMMessage>());
 
     /**
      * 环信聊天室id
@@ -283,7 +283,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
             EMMessage message = messages.get(messages.size() - 1);
             if (LiveConstants.CMD_GIFT.equals(((EMCmdMessageBody) message.getBody()).action())) {
                 //// FIXME: 2017/4/19 这里没调用没显示图标
-                showLeftGiftView(message.getFrom());
+                showLeftGiftView(message);
             } else if(LiveConstants.CMD_PRAISE.equals(((EMCmdMessageBody) message.getBody()).action())) {
                 showPraise(message.getIntAttribute(LiveConstants.EXTRA_PRAISE_COUNT, 1));
             }
@@ -554,7 +554,8 @@ public abstract class LiveBaseActivity extends BaseActivity {
         //发送了礼物,但是是谁发送的这个要显示出来,所以还得传个昵称的参数
         message.setAttribute(I.User.NICK,PreferenceManager.getInstance().getCurrentUserNick());
       EMClient.getInstance().chatManager().sendMessage(message);
-     showLeftGiftView(EMClient.getInstance().getCurrentUser());
+        //只传个用户名总是麻烦,传个message
+     showLeftGiftView(message);
     }
 
     //@OnClick(R.id.chat_image) void onChatImageClick() {
@@ -613,22 +614,34 @@ public abstract class LiveBaseActivity extends BaseActivity {
         }
     }
 
-    protected synchronized void showLeftGiftView(String name) {
+    protected synchronized void showLeftGiftView(EMMessage message) {
         if (!isGift2Showing) {
-            showGift2Derect(name);
+            showGift2Derect(message);
         } else if (!isGiftShowing) {
-            showGift1Derect(name);
+            showGift1Derect(message);
         } else {
-            toShowList.add(name);
+            toShowList.add(message);
         }
     }
 
-    private void showGift1Derect(final String name) {
+    private void showGift1Derect(final EMMessage message) {
         isGiftShowing = true;
         runOnUiThread(new Runnable() {
             @Override public void run() {
+                String username=message.getFrom();
+                String nickname;
+                int giftId=0;
+                try {
+                    nickname=message.getStringAttribute(I.User.NICK);
+                    giftId = message.getIntAttribute(LiveConstants.CMD_GIFT);
+                } catch (HyphenateException e) {
+                    nickname = username;
+                    e.printStackTrace();
+                }
                 leftGiftView.setVisibility(View.VISIBLE);
-                leftGiftView.setName(name);
+                leftGiftView.setName(nickname);
+                leftGiftView.setAvatar(username);
+                leftGiftView.setGift(giftId);
                 leftGiftView.setTranslationY(0);
                 ViewAnimator.animate(leftGiftView)
                         .alpha(0, 1)
@@ -640,7 +653,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
                         .duration(800)
                         .onStop(new AnimationListener.Stop() {
                             @Override public void onStop() {
-                                String pollName = null;
+                                EMMessage pollName = null;
                                 try {
                                     pollName = toShowList.remove(0);
                                 } catch (Exception e) {
@@ -663,12 +676,24 @@ public abstract class LiveBaseActivity extends BaseActivity {
         });
     }
 
-    private void showGift2Derect(final String name) {
+    private void showGift2Derect(final EMMessage message) {
         isGift2Showing = true;
         runOnUiThread(new Runnable() {
             @Override public void run() {
+                String username=message.getFrom();
+                String nickname;
+                int giftId=0;
+                try {
+                    nickname=message.getStringAttribute(I.User.NICK);
+                    giftId=message.getIntAttribute(LiveConstants.CMD_GIFT);
+                } catch (HyphenateException e) {
+                    nickname = username;
+                    e.printStackTrace();
+                }
                 leftGiftView2.setVisibility(View.VISIBLE);
-                leftGiftView2.setName(name);
+                leftGiftView2.setGift(giftId);
+                leftGiftView2.setAvatar(username);
+                leftGiftView2.setName(nickname);
                 leftGiftView2.setTranslationY(0);
                 ViewAnimator.animate(leftGiftView2)
                         .alpha(0, 1)
@@ -680,7 +705,7 @@ public abstract class LiveBaseActivity extends BaseActivity {
                         .duration(800)
                         .onStop(new AnimationListener.Stop() {
                             @Override public void onStop() {
-                                String pollName = null;
+                                EMMessage pollName = null;
                                 try {
                                     pollName = toShowList.remove(0);
                                 } catch (Exception e) {
@@ -693,11 +718,11 @@ public abstract class LiveBaseActivity extends BaseActivity {
                                 }
                             }
                         })
-                        .startDelay(2000)
+                        .startDelay(1000)
                         .start();
                 ViewAnimator.animate(leftGiftView2.getGiftImageView())
                         .translationX(-leftGiftView2.getGiftImageView().getX(), 0)
-                        .duration(1100)
+                        .duration(700)
                         .start();
             }
         });
