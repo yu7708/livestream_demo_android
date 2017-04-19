@@ -42,8 +42,12 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -82,8 +86,9 @@ public class LiveHelper {
     private IUserModel userModel;
 
     private LocalBroadcastManager broadcastManager;
-	private Map<Integer, Gift> giftList;
-
+	private List< Gift> giftList;
+	//// FIXME: 2017/4/19 添加仿写的礼物列表
+	private Map<Integer, Gift> giftMap;
 	private LiveHelper() {
 	}
 
@@ -323,6 +328,8 @@ public class LiveHelper {
      *
      * @return
      *//*
+
+     //原来的礼物列表
     public Map<String, EaseUser> getContactList() {
         if (isLoggedIn() && contactList == null) {
             contactList = demoModel.getContactList();
@@ -814,12 +821,50 @@ public class LiveHelper {
         mList.addAll(appContactList.values());
         demoModel.saveAppContactList(mList);
     }*/
-	public Map<Integer, Gift> getGiftList(){
+/*	public Map<Integer, Gift> getGiftList(){
 		if (giftList == null){
 			giftList = demoModel.getGiftList();
 		}
 		if (giftList == null){
 			giftList = new HashMap<Integer, Gift>();
+		}
+		return giftList;
+	}*/
+	//// FIXME: 2017/4/19 仿照上面的写法
+	public Map<Integer, Gift> getGiftMap(){
+		if (giftMap == null){
+            //如果为空，加载保存在数据库里的礼物数据
+			giftMap = demoModel.getGiftList();
+		}
+		if (giftMap == null){
+            //经历上一次的请求还是得到为空，就实例化一个空对象，这样不会报空指针
+			giftMap = new HashMap<Integer, Gift>();
+		}
+		return giftMap;
+	}
+	//// FIXME: 2017/4/19 设置迭代和比较礼物的价格的排序
+	public List<Gift> getGiftList(){
+        //先判断礼物列表没有数据，然后就下载数据，
+		if(giftList==null){
+			if(getGiftMap().size()>0){
+                //代表下载成功了，实例化数组，迭代输出，添加到gift这个类的列表中
+				giftList=new ArrayList<>();
+				Iterator<Map.Entry<Integer,Gift>> iterator=giftMap.entrySet().iterator();
+				while (iterator.hasNext()){
+					giftList.add(iterator.next().getValue());
+				}
+				//让显示的价钱有序排列
+				Collections.sort(giftList, new Comparator<Gift>() {
+					@Override
+					public int compare(Gift o1, Gift o2) {
+						return o2.getGprice().compareTo(o1.getGprice());
+					}
+				});
+			}
+		}
+		//这样写多一层保护
+		if(giftList==null){
+			giftList=new ArrayList<>();
 		}
 		return giftList;
 	}
@@ -834,7 +879,9 @@ public class LiveHelper {
 						demoModel.setGiftList(list);
 						//save list to cache
 						for (Gift gift : list) {
-							getGiftList().put(gift.getId(),gift);
+                            //// FIXME: 2017/4/19 替换
+                           // getGiftList().put(gift.getId(),gift);
+                            getGiftMap().put(gift.getId(),gift);
 						}
 					}
 				} catch (LiveException e) {
